@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "canisters": {
+    "test_addition_removal_stable_memory_backend": {
+      "type": "rust",
+      "package": "test_addition_removal_stable_memory_backend",
+      "candid": "src/test_addition_removal_stable_memory_backend/test_addition_removal_stable_memory_backend.did"
+    },
+    "test_addition_removal_stable_memory_frontend": {
+      "type": "assets",
+      "source": [
+        "src/test_addition_removal_stable_memory_frontend/assets"
+      ],
+      "dependencies": [
+        "test_addition_removal_stable_memory_backend"
+      ]
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": "",
+      "args": ""
+    }
+  }
+}
