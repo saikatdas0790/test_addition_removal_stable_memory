@@ -1,5 +1,5 @@
 [package]
-name = "test_addition_removal_stable_memory_backend"
+name = "backend"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,6 +9,6 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.8.2"
-ic-cdk = "0.6.0"
-ic-cdk-macros = "0.6.0"
+candid = "0.8.4"
+ic-cdk = "0.7.0"
+serde = "1.0.152"
