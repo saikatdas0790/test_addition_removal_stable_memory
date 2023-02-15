@@ -8,8 +8,9 @@ use ic_cdk::{
 
 #[derive(Default, CandidType, Deserialize)]
 pub struct CanisterData {
-    pub counter_1: u64,
-    // pub counter_2: u64,
+    counter_1: u64,
+    // #[serde(default)]
+    // counter_2: u64,
 }
 
 thread_local! {

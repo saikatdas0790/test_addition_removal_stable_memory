@@ -11,4 +11,4 @@ crate-type = ["cdylib"]
 [dependencies]
 candid = "0.8.4"
 ic-cdk = "0.7.0"
-serde = "1.0.152"
+serde = {version = "1.0.152", features = ["derive"]}
