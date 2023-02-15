@@ -1,10 +1,10 @@
 use std::cell::RefCell;
 
-use candid::export_service;
+use candid::{export_service, CandidType};
 use ic_cdk::{export::serde::Deserialize, storage};
 use serde::Serialize;
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize, CandidType)]
 pub struct CanisterData {
     counter_1: u64,
     // #[serde(default)]
