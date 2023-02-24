@@ -1,20 +1,36 @@
 use std::cell::RefCell;
 
-use candid::{export_service, CandidType};
+use candid::{export_service, CandidType, Principal};
 use ic_cdk::export::serde::Deserialize;
+use ic_stable_memory::utils::ic_types::SPrincipal;
 use serde::Serialize;
 
 mod upgrader;
 
 #[derive(Default, Serialize, Deserialize, CandidType)]
 pub struct CanisterData {
-    #[serde(default)]
     counter_1: u64,
-    #[serde(default)]
     counter_2: u64,
-    // #[serde(skip_serializing)]
-    // #[serde(default)]
-    // counter_3: u64,
+    inner_struct: InnerStruct,
+    // inner_struct_v2: InnerStructV2,
+}
+
+#[derive(Serialize, Deserialize, CandidType)]
+pub struct InnerStructV2 {
+    some_principal: Principal,
+}
+
+#[derive(Serialize, Deserialize, CandidType)]
+pub struct InnerStruct {
+    some_principal: SPrincipal,
+}
+
+impl Default for InnerStruct {
+    fn default() -> Self {
+        Self {
+            some_principal: SPrincipal(Principal::anonymous()),
+        }
+    }
 }
 
 thread_local! {

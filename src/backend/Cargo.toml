@@ -11,5 +11,6 @@ crate-type = ["cdylib"]
 [dependencies]
 candid = "0.8.4"
 ic-cdk = "0.7.0"
+ic-stable-memory = "0.2.6"
 rmp-serde = "1.1.1"
 serde = "1.0.152"
