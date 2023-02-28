@@ -1,3 +1,4 @@
 service : {
-    "greet": (text) -> (text) query;
+  add_new_principal : (principal) -> ();
+  get_principal : () -> (vec principal) query;
 }

@@ -1,40 +1,66 @@
-use std::cell::RefCell;
+use std::{cell::RefCell, collections::HashSet};
 
 use candid::{export_service, CandidType, Principal};
 use ic_cdk::export::serde::Deserialize;
 use ic_stable_memory::utils::ic_types::SPrincipal;
-use serde::Serialize;
+use serde::{Deserializer, Serialize};
 
+mod test;
 mod upgrader;
+
+thread_local! {
+    static CANISTER_DATA: RefCell<CanisterData> = RefCell::default();
+}
 
 #[derive(Default, Serialize, Deserialize, CandidType)]
 pub struct CanisterData {
-    counter_1: u64,
-    counter_2: u64,
     inner_struct: InnerStruct,
-    // inner_struct_v2: InnerStructV2,
-}
-
-#[derive(Serialize, Deserialize, CandidType)]
-pub struct InnerStructV2 {
-    some_principal: Principal,
 }
 
 #[derive(Serialize, Deserialize, CandidType)]
 pub struct InnerStruct {
-    some_principal: SPrincipal,
+    #[serde(deserialize_with = "principal_deserializer")]
+    some_set: HashSet<Principal>,
+}
+
+fn principal_deserializer<'de, D>(deserializer: D) -> Result<HashSet<Principal>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let previous: HashSet<SPrincipal> = HashSet::deserialize(deserializer)?;
+
+    Ok(previous.into_iter().map(|principal| principal.0).collect())
 }
 
 impl Default for InnerStruct {
     fn default() -> Self {
         Self {
-            some_principal: SPrincipal(Principal::anonymous()),
+            some_set: HashSet::new(),
         }
     }
 }
 
-thread_local! {
-    static CANISTER_DATA: RefCell<CanisterData> = RefCell::default();
+#[ic_cdk::update]
+#[candid::candid_method(update)]
+fn add_new_principal(principal: Principal) {
+    CANISTER_DATA.with(|canister_data_ref_cell| {
+        let mut canister_data = canister_data_ref_cell.borrow_mut();
+        canister_data.inner_struct.some_set.insert(principal);
+    });
+}
+
+#[ic_cdk::query]
+#[candid::candid_method(query)]
+fn get_principal() -> Vec<Principal> {
+    CANISTER_DATA.with(|canister_data_ref_cell| {
+        let canister_data = canister_data_ref_cell.borrow();
+        canister_data
+            .inner_struct
+            .some_set
+            .iter()
+            .cloned()
+            .collect()
+    })
 }
 
 const BUFFER_SIZE_BYTES: usize = 2 * 1024 * 1024; // 2 MiB

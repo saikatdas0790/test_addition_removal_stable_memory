@@ -1,6 +1,8 @@
+#[allow(unused_imports)]
+use crate::export_candid;
+
 #[test]
 fn save_candid() {
-    use crate::export_candid;
     use std::env;
     use std::fs::write;
     use std::path::PathBuf;
